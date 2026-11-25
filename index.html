@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Madaris League – Mobile App Demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4F6FA;--ink:#0F172A;--mut:#5A6478;--card:#fff;--line:#DFE4EE;--acc:#FFC93C;--g:#16A34A;--r:#E23D28;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1220;--ink:#EEF2FA;--mut:#98A3BA;--card:#151F35;--line:#26324D}}
+:root[data-theme="dark"]{--bg:#0B1220;--ink:#EEF2FA;--mut:#98A3BA;--card:#151F35;--line:#26324D}
+*{box-sizing:inherit}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Cairo,system-ui,sans-serif;line-height:1.45;overflow-x:hidden}
+.w{max-width:1040px;margin:0 auto;padding:0 16px}
+button{font-family:inherit;cursor:pointer}button:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+.hero{padding:34px 0 10px;position:relative}
+.hero h1{font-size:clamp(38px,9vw,78px);line-height:.95;margin:0;font-weight:900;letter-spacing:-2px}
+.hero h1 em{font-style:normal;background:var(--acc);color:#0F172A;padding:0 10px;border-radius:10px;display:inline-block;transform:rotate(-2deg)}
+.hero p{max-width:520px;color:var(--mut);font-size:18px;margin:14px 0}
+.ball{position:absolute;right:6px;top:30px;font-size:clamp(48px,10vw,92px);animation:bounce 1.1s cubic-bezier(.3,0,.6,1) infinite alternate}
+.shadow{position:absolute;right:14px;top:128px;width:70px;height:10px;border-radius:50%;background:#0003;animation:sh 1.1s infinite alternate}
+@keyframes bounce{to{transform:translateY(40px) rotate(200deg)}}
+@keyframes sh{from{transform:scale(.5);opacity:.2}to{transform:scale(1);opacity:.5}}
+.stats{display:flex;gap:26px;flex-wrap:wrap;margin:6px 0 22px}
+.stats b{font-size:34px;font-weight:900;display:block;line-height:1}.stats span{color:var(--mut);font-size:14px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;padding-bottom:40px}
+.tile{aspect-ratio:1;border:0;border-radius:22px;color:#fff;text-align:start;padding:18px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;background:var(--c);transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .2s,box-shadow .2s;box-shadow:0 8px 0 #0003}
+.tile:hover{box-shadow:0 14px 0 #0003;transform:perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(-6px)}
+.tile:active{transform:translateY(4px);box-shadow:0 2px 0 #0003}
+.tile::before{content:"";position:absolute;inset:14px;border:2px solid #fff5;border-radius:12px;pointer-events:none}
+.tile::after{content:"";position:absolute;left:50%;top:50%;width:90px;height:90px;margin:-45px;border:2px solid #fff5;border-radius:50%;pointer-events:none;transition:transform .5s}
+.tile:hover::after{transform:scale(1.5) rotate(90deg)}
+.tile>*{position:relative;z-index:1}
+.tile h2{margin:0;font-size:30px;font-weight:900;line-height:1}
+.live{font-size:12px;font-weight:800;background:#fff;color:#111;border-radius:20px;padding:1px 9px;display:inline-flex;align-items:center;gap:6px;align-self:flex-start}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--r);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{transform:scale(1.8);opacity:.4}}
+.tile small{font-size:14px;font-weight:600;opacity:.95;background:#0003;padding:4px 10px;border-radius:10px;align-self:flex-start}
+.tile.lock{background:repeating-linear-gradient(45deg,#8B94A8,#8B94A8 12px,#7D869B 12px,#7D869B 24px);cursor:default;box-shadow:none;transform:none}
+.tile.lock:hover{transform:none;box-shadow:none}
+.back{border:0;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:20px;padding:6px 16px;font-weight:700;margin:16px 0}
+.ah{background:var(--c);color:#fff;border-radius:22px;padding:22px;position:relative;overflow:hidden;animation:rise .5s both}
+.ah h1{margin:0;font-size:clamp(32px,7vw,54px);font-weight:900;line-height:1}
+.ah p{margin:4px 0 0;opacity:.92}
+.ah::after{content:"⚽";position:absolute;right:16px;bottom:-14px;font-size:90px;opacity:.25;transform:rotate(-20deg)}
+@keyframes rise{from{opacity:0;transform:translateY(24px) scale(.97)}}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;align-items:center}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:5px 16px;font-weight:700;font-size:14px;transition:.15s}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink);transform:scale(1.05)}
+.go{background:var(--g);color:#fff;border:0;border-radius:12px;padding:8px 18px;font-weight:800;font-size:15px;margin-inline-start:auto;box-shadow:0 4px 0 #0F6B31}
+.go:active{transform:translateY(3px);box-shadow:none}.go:disabled{opacity:.5;box-shadow:none;cursor:default}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:10px;text-align:center;white-space:nowrap}
+th{color:var(--mut);font-size:13px;font-weight:600;border-bottom:1px solid var(--line)}
+td:nth-child(2),th:nth-child(2){text-align:start}
+tbody tr{border-bottom:1px solid var(--line);cursor:pointer;background:var(--card)}tbody tr:hover{background:#FFC93C22}
+tr.up td:first-child{box-shadow:inset 5px 0 var(--g)}tr.dn td:first-child{box-shadow:inset 5px 0 var(--r)}
+.f{display:inline-block;width:21px;height:21px;border-radius:6px;color:#fff;font-size:11px;font-weight:800;line-height:21px;margin:0 1px}
+.W{background:var(--g)}.D{background:#8793AA}.L{background:var(--r)}
+.pts{font-weight:900;font-size:17px}.flash{animation:fl 1.2s}@keyframes fl{0%{background:var(--acc)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:14px;animation:rise .4s both}
+.mut{color:var(--mut);font-size:14px}
+.sc{display:grid;grid-template-columns:28px 1.2fr 2fr 40px;gap:10px;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line)}
+.sc .t{height:14px;background:var(--line);border-radius:8px;overflow:hidden}
+.sc .t i{display:block;height:100%;background:var(--c);width:0;border-radius:8px;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.star{border:0;background:none;font-size:22px;color:var(--mut)}.star.on{color:var(--acc);animation:pop .4s}
+@keyframes pop{50%{transform:scale(1.7) rotate(20deg)}}
+.mr{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);align-items:center}
+.mr b{background:var(--ink);color:var(--bg);border-radius:8px;padding:0 12px}
+.ov{position:fixed;inset:0;background:#0009;display:grid;place-items:center;z-index:20;animation:fade .2s;padding:16px}
+@keyframes fade{from{opacity:0}}
+.ov .card{width:min(460px,100%);text-align:center}
+.ov .mr b{font-size:24px}
+.mq{overflow:hidden;background:var(--ink);color:var(--bg);border-radius:12px;margin:0 0 20px;white-space:nowrap}
+.mq>div{display:inline-block;padding:8px 0;animation:mq 30s linear infinite}.mq span{margin:0 28px}.mq b{color:var(--acc)}
+@keyframes mq{to{transform:translateX(-50%)}}
+.cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:14px;margin-top:12px}
+.fc{position:relative;border-radius:16px 16px 40px 40px;padding:12px 10px 14px;text-align:center;color:#1b1b1b;cursor:pointer;overflow:hidden;box-shadow:0 6px 0 #0003;transition:transform .25s,box-shadow .25s;animation:rise .45s both}
+.fc:hover{transform:translateY(-8px) rotate(-1.5deg);box-shadow:0 14px 0 #0003}
+.fc::after{content:"";position:absolute;top:0;left:-80%;width:50%;height:100%;background:linear-gradient(100deg,transparent,#fff8,transparent);transform:skewX(-20deg)}
+.fc:hover::after{left:140%;transition:left .7s}
+.gold{background:linear-gradient(160deg,#FBE38A,#E2A92B)}.silver{background:linear-gradient(160deg,#F1F4F8,#A9B4C4)}.bronze{background:linear-gradient(160deg,#E9B58A,#A8643A)}
+.fc .o1{position:absolute;left:12px;top:8px;text-align:left;line-height:1}.fc .o1 b{font-size:28px;font-weight:900;display:block}.fc .o1 span{font-size:12px;font-weight:800}
+.av{width:78px;height:78px;border-radius:50%;overflow:hidden;margin:6px 0 4px 34px;background:#fff6}
+.fc .nm{font-weight:900;font-size:14px;line-height:1.15;margin:2px 0 6px}
+.fc .s2{display:flex;justify-content:center;gap:10px;font-size:12px;border-top:1px solid #0003;padding-top:6px}
+.potm{display:block;width:100%;text-align:start;border:0;border-radius:12px;padding:10px 14px;margin-bottom:14px;background:linear-gradient(100deg,#FBE38A,#E2A92B);color:#1b1b1b;font-size:15px;animation:rise .5s both}
+.srch{flex:1;min-width:160px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:20px;padding:6px 14px;font:600 14px Cairo,sans-serif}
+.pm{display:grid;grid-template-columns:170px 1fr;gap:20px;width:min(760px,100%);max-height:90vh;overflow:auto;text-align:start;position:relative}
+.pm .fc{cursor:default;height:fit-content}.pm .fc:hover{transform:none}
+.x{position:absolute;right:10px;top:8px;border:0;background:none;color:var(--ink);font-size:20px}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.kp div{background:var(--bg);border-radius:10px;padding:8px;text-align:center;font-size:12px;color:var(--mut)}.kp b{display:block;font-size:24px;color:var(--ink);font-weight:900}
+.rd{width:100%;max-width:320px;display:block;margin:0 auto}
+@keyframes grow{from{transform:scale(0)}}
+.gb{display:flex;gap:10px;align-items:flex-end;height:80px;margin:8px 0 14px}.gb div{flex:1;text-align:center;font-size:12px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+.gb i{display:block;width:70%;background:var(--acc);border-radius:6px 6px 0 0;transform-origin:bottom;animation:up .7s both}@keyframes up{from{transform:scaleY(0)}}
+.gb small{color:var(--mut);font-size:10px}
+.hl{font-size:13px;color:var(--mut);padding:2px 0 8px}.hl a{color:var(--ink);text-decoration:none;font-weight:600}.hl a:hover{text-decoration:underline}
+.tb{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+@media(max-width:560px){.pm{grid-template-columns:1fr}.pm .fc{width:160px;margin:auto}}
+footer{padding:20px 0 40px;color:var(--mut);font-size:13px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style><meta name="theme-color" content="#0F172A"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+<style>
+:root{padding-top:0;padding-bottom:0}
+html,body{height:100%;margin:0}*{-webkit-tap-highlight-color:transparent}
+body{display:grid;place-items:center;overflow:hidden}
+#shell{position:relative;width:100%;height:100vh;height:100dvh;overflow:hidden;background:var(--bg);display:flex;flex-direction:column}
+#scr{flex:1;overflow-y:auto;overflow-x:hidden;padding-top:env(safe-area-inset-top,0px);padding-bottom:150px;overscroll-behavior:contain}
+@media(min-width:600px){body{background:radial-gradient(circle at 30% 20%,#2a3a66,#0b1020)}#shell{width:390px;height:min(820px,94vh);border-radius:44px;border:10px solid #000;box-shadow:0 30px 80px #000a}}
+.w{padding:0 14px}
+.hero{padding:16px 0 0}.hero h1{font-size:38px;letter-spacing:-1.5px}.hero p{font-size:15px;margin:8px 0}.ball{font-size:52px;top:14px}.shadow{top:78px;width:44px}
+.stats{gap:18px;margin-bottom:14px}.stats b{font-size:26px}
+.tiles{grid-template-columns:1fr 1fr;gap:12px;padding-bottom:20px}
+.tile{padding:12px;border-radius:20px}.tile h2{font-size:21px}.tile small{font-size:11px;padding:3px 8px}.tile div div{font-size:12px}.tile::before{inset:9px}.tile::after{width:60px;height:60px;margin:-30px}
+.live{font-size:10px;padding:0 7px}
+.chip{min-height:38px;padding:4px 14px}
+.tb,.bar .go{display:none}
+.ah h1{font-size:34px}.ah::after{font-size:70px}
+th,td{padding:9px 6px;font-size:13px}th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5),th:nth-child(6),td:nth-child(6){display:none}
+td:nth-child(2){white-space:normal;min-width:110px}.pts{font-size:16px}.f{width:18px;height:18px;line-height:18px;font-size:10px}
+.cg{grid-template-columns:1fr 1fr;gap:12px}
+.ov{position:absolute;place-items:end center;padding:0;z-index:30}
+.ov .card{width:100%;margin:0;border-radius:24px 24px 0 0;max-height:88%;overflow:auto;animation:sheet .35s cubic-bezier(.2,.9,.3,1) both}
+@keyframes sheet{from{transform:translateY(100%)}}
+.pm{grid-template-columns:1fr;gap:14px}.pm::before{content:"";width:42px;height:5px;border-radius:3px;background:var(--line);margin:0 auto}.pm .fc{width:170px;margin:0 auto}
+.x{top:14px}
+#bn{position:absolute;left:0;right:0;bottom:0;display:flex;background:var(--card);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));z-index:20}
+#bn button{flex:1;border:0;background:none;color:var(--mut);font:700 11px Cairo,sans-serif;display:flex;flex-direction:column;align-items:center;gap:0;padding:4px 0;position:relative;transition:.2s}
+#bn button span{font-size:22px;transition:transform .25s}#bn button.on{color:var(--ink)}#bn button.on span{transform:translateY(-4px) scale(1.25)}
+#bn button.on::after{content:"";position:absolute;top:-6px;width:28px;height:4px;border-radius:0 0 4px 4px;background:var(--acc)}
+#bn i{position:absolute;top:0;right:22%;background:var(--r);color:#fff;border-radius:10px;font-size:10px;padding:0 5px;font-style:normal}
+#fab{position:absolute;right:14px;bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:19;border:0;border-radius:28px;padding:12px 20px;background:var(--g);color:#fff;font:800 15px Cairo,sans-serif;box-shadow:0 5px 0 #0F6B31,0 10px 20px #0005;animation:rise .4s both}
+#fab:active{transform:translateY(3px);box-shadow:0 2px 0 #0F6B31}
+#splash{position:absolute;inset:0;z-index:50;background:#0F172A;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font:900 28px Cairo,sans-serif;transition:opacity .5s,transform .5s}
+#splash.out{opacity:0;transform:scale(1.15);pointer-events:none}
+#splash .lg{font-size:80px;animation:bounce .6s cubic-bezier(.3,0,.6,1) infinite alternate}
+#splash small{font:600 14px Cairo,sans-serif;color:#98A3BA}
+</style>
+</head><body>
+<div id="shell"><div id="scr"><main class="w" id="app"></main><footer class="w">Demo with invented schools, players and scores. No backend, no database.</footer></div><button id="fab" onclick="navigator.vibrate&&navigator.vibrate(15);play()"></button><nav id="bn" aria-label="Main"></nav><div id="splash"><div class="lg">⚽</div>Madaris League<small>Every school. One league.</small></div></div>
+<script>
+const A=[{n:"New Cairo",c:"#2563EB",s:["Nile Valley Intl","Cairo Future IB","Rehab Language","Alpha British","Bright Minds","Capital Stars"]},
+{n:"Heliopolis",c:"#E2492F",s:["Heliopolis National","Korba Language","Ahram Model","Merghany School","Roxy Language","Safir Academy"]},
+{n:"Nasr City",c:"#7C3AED",s:["Zahra School","Abbas Language","Tayaran Model","Makram Intl","Rabaa Academy","Hay 7 National"]},
+{n:"Shorouk",c:"#0D9488",s:["Shorouk Language","Green Valley","Horizon Intl","Sunrise Academy","Orchid School","Falcon Prep"]}];
+const SOON=["Maadi","6th October"],ST={primary:"Primary",prep:"Preparatory",secondary:"Secondary"};
+const FN=["Omar","Youssef","Ahmed","Karim","Mostafa","Adam","Ziad","Hamza","Tarek","Ali","Malek","Seif","Yassin","Hady","Moaz","Fares","Bassel","Nour"],LN=["Hassan","Salah","Fathy","Nabil","Samir","Gamal","Farouk","Adel","Reda","Emad"];
+const st={a:null,stage:"prep",tab:"table",sel:null,played:{},watch:{}},cache={};
+const pl=(a,i,j,o)=>FN[(a*7+i*3+j+o)%18]+" "+LN[(i+j*3+a+o)%10];
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function build(a,sg){const k=a+sg;if(cache[k])return cache[k];const r=rng(a*97+sg.length*13+5),ms=[];let t=[0,1,2,3,4,5];
+for(let rd=1;rd<=5;rd++){for(let i=0;i<3;i++){const h=t[i],v=t[5-i],hs=Math.floor(r()*r()*5+r()*1.5),as=Math.floor(r()*r()*4+r()*1.4),sc={};
+[[h,hs],[v,as]].forEach(([m,n])=>{for(let q=0;q<n;q++){const key=m+"-"+Math.floor(r()*r()*5);sc[key]=(sc[key]||0)+1}});ms.push({rd,h,a:v,hs,as,sc})}
+t=[t[0],t[5],t[1],t[2],t[3],t[4]]}return cache[k]=ms}
+const POS=["ST","RW","CAM","CM","CB"],NO=[9,7,10,8,5],AT=["Pace","Shooting","Passing","Dribbling","Defending","Stamina"],mn=(i,j,q,rd)=>(i*37+j*19+q*29+rd*13)%89+1;
+function calc(){const a=st.a,o=Object.keys(ST).indexOf(st.stage)*5,ms=build(a,st.stage),n=st.played[a+st.stage]??3,
+T=A[a].s.map((_,i)=>({i,p:0,w:0,d:0,l:0,gf:0,ga:0,pts:0,f:[]})),P=[];
+A[a].s.forEach((_,i)=>{for(let j=0;j<5;j++)P.push({a,i,j,st:st.stage,name:pl(a,i,j,o),g:0,as:0,gm:Array(n).fill(0),ev:[]})});
+ms.filter(m=>m.rd<=n).forEach(m=>{[[m.h,m.hs,m.as],[m.a,m.as,m.hs]].forEach(([i,f,g])=>{const x=T[i],q=f>g?"W":f<g?"L":"D";x.p++;x.gf+=f;x.ga+=g;x[q.toLowerCase()]++;x.pts+=q=="W"?3:q=="D"?1:0;x.f.push(q)});
+for(const k in m.sc){const[i,j]=k.split("-").map(Number);for(let q=0;q<m.sc[k];q++){const p=P[i*5+j];p.g++;p.gm[m.rd-1]++;p.ev.push({rd:m.rd,min:mn(i,j,q,m.rd)});P[i*5+(j+1+q%4)%5].as++}}});
+P.forEach(p=>{const t=T[p.i],h=(a*7+p.i*3+p.j*5+o)%7;p.apps=t.p;p.rating=Math.min(9.9,+(6+.45*p.g+.25*p.as+.08*t.w+h/10).toFixed(1));
+p.at=AT.map((_,k)=>{let v=55+(a*13+p.i*7+p.j*11+o*3+k*17)%25;if(k==1)v+=p.g*4+(p.j<3?6:-8);if(k==2)v+=p.as*4;if(k==4)v+=p.j>2?14:-6;return Math.max(35,Math.min(99,v))});
+p.ovr=Math.round(p.at.reduce((s,x)=>s+x,0)/6+(p.rating-6)*4);p.tier=p.ovr>=74?"gold":p.ovr>=67?"silver":"bronze";p.no=NO[p.j];p.pos=POS[p.j];p.age=[9,12,15][o/5]+(a+p.i+p.j)%3;p.sch=A[a].s[p.i]});
+T.sort((x,y)=>y.pts-x.pts||(y.gf-y.ga)-(x.gf-x.ga)||y.gf-x.gf);
+return{T,P,pr:P.slice().sort((x,y)=>y.g-x.g||y.as-x.as||y.rating-x.rating),n,o,ms,tot:ms.filter(m=>m.rd<=n).reduce((s,m)=>s+m.hs+m.as,0)}}
+function getP(a,sg,i,j){const v=[st.a,st.stage];st.a=a;st.stage=sg;const c=calc();st.a=v[0];st.stage=v[1];return c.P[i*5+j]}
+const shell=document.getElementById("shell"),scr=document.getElementById("scr");
+function nav(){const sa=st.a!=null,n=sa?(st.played[st.a+st.stage]??3):5,w=Object.keys(st.watch).length,it=[["home","🏟","Areas"],["table","📊","Table"],["players","👥","Players"],["scorers","🥇","Boot"],["scout","⭐","Scout"]];
+document.getElementById("bn").innerHTML=it.map(([k,e,l])=>`<button class="${(k=="home"?!sa:sa&&st.tab==k)?"on":""}" onclick="gt('${k}')"><span>${e}</span>${l}${k=="scout"&&w?`<i>${w}</i>`:""}</button>`).join("");
+const f=document.getElementById("fab");f.style.display=sa&&n<5&&(st.tab=="table"||st.tab=="matches")?"block":"none";f.textContent="▶ Play matchday "+(n+1)}
+function gt(k){navigator.vibrate&&navigator.vibrate(8);if(k=="home")return home();if(st.a==null)st.a=st.last??0;st.tab=k;go(()=>{render();scr.scrollTop=0})}
+const go=f=>document.startViewTransition?document.startViewTransition(f):f();
+function openArea(i){go(()=>{st.a=i;st.sel=null;st.tab="table";st.last=i;render();scr.scrollTop=0})}
+function home(){go(()=>{st.last=st.a??st.last;st.a=null;render();scr.scrollTop=0})}
+function count(el){const t=+el.dataset.n;let v=0;const id=setInterval(()=>{v+=Math.ceil(t/25);if(v>=t){v=t;clearInterval(id)}el.textContent=v},35)}
+function renderHome(){const sv=st.a,all=[];let g=0,sc=0;A.forEach((_,i)=>{st.a=i;const c=calc();g+=c.tot;all.push(c)});st.a=sv;
+return`<section class="hero"><div class="ball">⚽</div><div class="shadow"></div><h1>Every school.<br>One <em>league</em>.</h1><p>Pick your area. Follow your school's football season from kickoff to the city final.</p>
+<div class="stats"><div><b data-n="${A.length*6}">0</b><span>schools playing</span></div><div><b data-n="${A.length*3}">0</b><span>teams per area</span></div><div><b data-n="${g}">0</b><span>goals this season</span></div></div></section>
+${mq(all)}<div class="tiles">${A.map((a,i)=>`<button class="tile" style="--c:${a.c}" onclick="openArea(${i})" onmousemove="tilt(event,this)" onmouseleave="this.style.setProperty('--rx','0deg');this.style.setProperty('--ry','0deg')"><span class="live"><i></i>LIVE</span><div><h2>${a.n}</h2><div style="margin:6px 0 10px;opacity:.9">${a.s.length} schools · matchday ${all[i].n}/5</div><small>Leader: ${a.s[all[i].T[0].i]}</small></div></button>`).join("")}
+${SOON.map(n=>`<div class="tile lock"><span class="live" style="background:#fff9">Soon</span><div><h2>${n}</h2><small>Opens next season</small></div></div>`).join("")}</div>`}
+function tilt(e,el){const r=el.getBoundingClientRect();el.style.setProperty("--ry",((e.clientX-r.left)/r.width-.5)*14+"deg");el.style.setProperty("--rx",(.5-(e.clientY-r.top)/r.height)*14+"deg")}
+st.sort="g";st.q="";
+const av=p=>`<svg viewBox="0 0 80 80" class="av"><circle cx="40" cy="40" r="40" fill="${A[p.a].c}"/><circle cx="40" cy="30" r="12" fill="#F2C6A0"/><path d="M10 80c2-20 16-28 30-28s28 8 30 28z" fill="#fff"/><text x="40" y="72" text-anchor="middle" font-size="15" font-weight="900" fill="${A[p.a].c}">${p.no}</text></svg>`;
+const card=(p,k=1)=>`<div class="fc ${p.tier}" ${k?`onclick="showP(${p.i},${p.j},${p.a},'${p.st}')"`:""}><div class="o1"><b>${p.ovr}</b><span>${p.pos}</span></div>${av(p)}<div class="nm">${p.name}</div><div class="s2"><span><b>${p.g}</b> G</span><span><b>${p.as}</b> A</span><span><b>${p.rating}</b> R</span></div></div>`;
+const mq=all=>{const s=all.map((c,i)=>`<span>⚽ ${A[i].n}: <b>${c.pr[0].name}</b> ${c.pr[0].g} goals</span>`).join("");return`<div class="mq"><div>${s}${s}</div></div>`};
+const radar=p=>{const pt=(k,v)=>{const g=(-90+60*k)*Math.PI/180;return[100+v*.8*Math.cos(g),100+v*.8*Math.sin(g)]},ring=v=>AT.map((_,k)=>pt(k,v).join(",")).join(" ");
+return`<svg viewBox="-30 -5 260 210" class="rd">${[40,70,100].map(v=>`<polygon points="${ring(v)}" fill="none" stroke="var(--line)"/>`).join("")}<polygon points="${p.at.map((v,k)=>pt(k,v).join(",")).join(" ")}" fill="${A[p.a].c}" fill-opacity=".45" stroke="${A[p.a].c}" stroke-width="2" style="transform-origin:100px 100px;animation:grow .9s cubic-bezier(.2,.9,.3,1.2) both"/>${AT.map((t,k)=>{const[x,y]=pt(k,120);return`<text x="${x}" y="${y}" font-size="9" text-anchor="middle" dominant-baseline="middle" fill="var(--mut)">${t} ${p.at[k]}</text>`}).join("")}</svg>`};
+const pgrid=c=>{const q=(st.q||"").toLowerCase(),k=st.sort;return`<div class="cg">${c.P.filter(p=>p.name.toLowerCase().includes(q)||p.sch.toLowerCase().includes(q)).sort((x,y)=>(y[k]-x[k])||y.rating-x.rating).map(p=>card(p)).join("")||'<p class="mut">No players match. Try another name or school.</p>'}</div>`};
+function tw(a,sg,i,j,el){navigator.vibrate&&navigator.vibrate(15);const k=a+sg+i+j;st.watch[k]?delete st.watch[k]:st.watch[k]={a,sg,i,j};if(el)el.textContent=st.watch[k]?"★ On scout list":"☆ Add to scout list";render()}
+function showP(i,j,a=st.a,sg=st.stage){const p=getP(a,sg,i,j),k=a+sg+i+j,o=document.createElement("div");o.className="ov";o.onclick=e=>{if(e.target==o)o.remove()};
+o.innerHTML=`<div class="card pm" role="dialog" aria-label="${p.name}"><button class="x" aria-label="Close" onclick="this.closest('.ov').remove()">✕</button>${card(p,0)}<div><h2 style="margin:0">${p.name}</h2><p class="mut">${p.sch} · ${A[a].n} · ${ST[sg]} · age ${p.age}</p><div class="kp"><div><b>${p.g}</b>Goals</div><div><b>${p.as}</b>Assists</div><div><b>${p.apps}</b>Matches</div><div><b>${p.rating}</b>Rating</div></div>${radar(p)}<b>Goals by matchday</b><div class="gb">${p.gm.map((g,r)=>`<div>${g}<i style="height:${g*22+4}px"></i><small>MD${r+1}</small></div>`).join("")}</div><b>Goal log</b><div class="mut">${p.ev.length?p.ev.map(e=>`⚽ MD${e.rd} · ${e.min}'`).join("  ·  "):"No goals yet this season."}</div><button class="go" style="margin:14px 0 0" onclick="tw(${a},'${sg}',${i},${j},this)">${st.watch[k]?"★ On scout list":"☆ Add to scout list"}</button></div></div>`;shell.appendChild(o)}
+function swipe(o){const c=o.firstElementChild;let y0=null;c.addEventListener("touchstart",e=>{if(c.scrollTop<=0)y0=e.touches[0].clientY},{passive:true});c.addEventListener("touchmove",e=>{if(y0!=null){const d=e.touches[0].clientY-y0;if(d>0)c.style.transform="translateY("+d+"px)"}},{passive:true});c.addEventListener("touchend",e=>{if(y0==null)return;const d=e.changedTouches[0].clientY-y0;y0=null;if(d>90)o.remove();else c.style.transform=""})}
+document.addEventListener("keydown",e=>{if(e.key=="Escape")document.querySelector(".pm")?.closest(".ov").remove()});
+function render(){nav();const app=document.getElementById("app");if(st.a==null){app.innerHTML=renderHome();app.querySelectorAll("[data-n]").forEach(count);return}
+const a=A[st.a],c=calc(),tabs={table:"League table",players:"Players",scorers:"Golden Boot",matches:"Results",scout:"Scout list ("+Object.keys(st.watch).length+")"};
+const bar=`<div class="bar">${Object.entries(ST).map(([k,v])=>`<button class="chip ${st.stage==k?"on":""}" onclick="st.stage='${k}';st.sel=null;render()">${v}</button>`).join("")}<button class="go" ${c.n>=5?"disabled":""} onclick="play()">${c.n>=5?"Season complete 🏆":"Play matchday "+(c.n+1)}</button></div>
+<div class="tb" style="margin-bottom:14px">${Object.entries(tabs).map(([k,v])=>`<button class="chip ${st.tab==k?"on":""}" onclick="st.tab='${k}';render()">${v}</button>`).join("")}</div>`;
+let h="";
+if(st.tab=="table"){const b=c.P.filter(p=>p.gm[c.n-1]>0).sort((x,y)=>y.gm[c.n-1]-x.gm[c.n-1]||y.rating-x.rating)[0];
+h=(b?`<button class="potm" onclick="showP(${b.i},${b.j})">⭐ Player of matchday ${c.n}: <b>${b.name}</b> (${b.sch}) · ${b.gm[c.n-1]} goal${b.gm[c.n-1]>1?"s":""}. Tap for profile.</button>`:"")+`<div class="box"><table><thead><tr><th>#</th><th>School</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Form</th><th>Pts</th></tr></thead><tbody>${c.T.map((x,r)=>`<tr data-i="${x.i}" class="${r<2?"up":r>3?"dn":""}" onclick="st.sel=${x.i};render();document.getElementById('team').scrollIntoView({behavior:'smooth',block:'start'})"><td>${r+1}</td><td>${a.s[x.i]}</td><td>${x.p}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td><td>${x.gf-x.ga>0?"+":""}${x.gf-x.ga}</td><td>${x.f.slice(-5).map(f=>`<span class="f ${f}">${f}</span>`).join("")}</td><td class="pts">${x.pts}</td></tr>`).join("")}</tbody></table></div><p class="mut">Green: top 2 reach the city final. Red: bottom 2 face a playoff. Tap a school to see its squad cards.</p><div id="team">${st.sel!=null?team(c):""}</div>`}
+if(st.tab=="players")h=`<div class="bar" style="margin-top:0">${[["g","Goals"],["as","Assists"],["rating","Rating"]].map(([k,v])=>`<button class="chip ${st.sort==k?"on":""}" onclick="st.sort='${k}';render()">Sort: ${v}</button>`).join("")}<input class="srch" placeholder="Search player or school" aria-label="Search players" value="${st.q}" oninput="st.q=this.value;document.getElementById('pg').innerHTML=pgrid(calc())"></div><div id="pg">${pgrid(c)}</div>`;
+if(st.tab=="scorers"){const m=c.pr[0].g||1;h=`<div class="box" style="--c:${a.c}">${c.pr.slice(0,8).map((p,r)=>`<div class="sc"><b>${r+1}</b><div><a href="#" style="color:inherit;font-weight:700;text-decoration:none" onclick="showP(${p.i},${p.j});return false">${p.name}</a><div class="mut">${p.sch} · ${p.as} assists</div></div><div class="t"><i data-w="${p.g/m*100}"></i></div><b>${p.g}</b></div>`).join("")}</div><p class="mut">Tap a name to open the player profile.</p>`}
+if(st.tab=="matches"){const ev=m=>Object.keys(m.sc).flatMap(k=>{const[i,j]=k.split("-").map(Number);return Array.from({length:m.sc[k]},(_,q)=>({i,j,t:mn(i,j,q,m.rd)}))}).sort((x,y)=>x.t-y.t).map(e=>`<a href="#" onclick="showP(${e.i},${e.j});return false">${pl(st.a,e.i,e.j,c.o)} ${e.t}'</a>`).join(" · ")||"No goals";
+h=[...Array(c.n)].map((_,i)=>c.n-i).map(rd=>`<div class="card"><b>Matchday ${rd}</b>${c.ms.filter(m=>m.rd==rd).map(m=>`<div class="mr"><span>${a.s[m.h]}</span><b>${m.hs} – ${m.as}</b><span style="text-align:end">${a.s[m.a]}</span></div><div class="hl">⚽ ${ev(m)}</div>`).join("")}</div>`).join("")}
+if(st.tab=="scout"){const w=Object.values(st.watch);h=w.length?`<p class="mut">Players you starred, across all areas. In the real app, club scouts would see this list with match video.</p><div class="cg">${w.map(x=>card(getP(x.a,x.sg,x.i,x.j))).join("")}</div>`:`<div class="card"><b>Your scout list is empty</b><p class="mut">Open any player card and tap “Add to scout list”.</p></div>`}
+app.innerHTML=`<button class="back" onclick="home()">← All areas</button><div class="ah" style="--c:${a.c}"><h1>${a.n} League</h1><p>${ST[st.stage]} football · ${a.s.length} schools · 30 players tracked · ${c.tot} goals so far</p></div>${bar}${h}`;
+requestAnimationFrame(()=>requestAnimationFrame(()=>app.querySelectorAll("[data-w]").forEach(e=>e.style.width=e.dataset.w+"%")))}
+function team(c){const i=st.sel,x=c.T.find(t=>t.i==i),r=c.T.indexOf(x)+1,a=A[st.a];
+return`<div class="card" style="border-top:6px solid ${a.c}"><h2 style="margin:0">${a.s[i]}</h2><p class="mut">Position ${r} of 6 · ${x.pts} pts · ${x.w}W ${x.d}D ${x.l}L · ${x.gf} scored, ${x.ga} conceded · ${r<=2?"On track for the city final.":r>4?"In the playoff zone and needs wins.":"Mid-table and still in the race."}</p><div class="cg">${c.P.filter(p=>p.i==i).map(p=>card(p)).join("")}</div></div>`}
+function play(){const c=calc();if(c.n>=5)return;const a=A[st.a],ms=c.ms.filter(m=>m.rd==c.n+1),o=document.createElement("div");o.className="ov";
+o.innerHTML=`<div class="card"><b>Matchday ${c.n+1} · full time</b>${ms.map(m=>`<div class="mr"><span>${a.s[m.h]}</span><b><span data-t="${m.hs}">0</span> – <span data-t="${m.as}">0</span></b><span style="text-align:end">${a.s[m.a]}</span></div>`).join("")}<p class="mut">Updating the table…</p></div>`;shell.appendChild(o);
+o.querySelectorAll("[data-t]").forEach(e=>{let v=0;const t=+e.dataset.t;if(t)setTimeout(function s(){v++;e.textContent=v;if(v<t)setTimeout(s,450)},500)});
+setTimeout(()=>{const old={};document.querySelectorAll("tr[data-i]").forEach(r=>old[r.dataset.i]=r.getBoundingClientRect().top);
+st.played[st.a+st.stage]=c.n+1;o.remove();render();
+document.querySelectorAll("tr[data-i]").forEach(r=>{const d=old[r.dataset.i]-r.getBoundingClientRect().top;r.animate([{transform:`translateY(${d}px)`},{transform:"none"}],{duration:800,easing:"cubic-bezier(.2,.8,.2,1)"});r.querySelector(".pts").classList.add("flash")})},2600)}
+render();setTimeout(()=>{splash.classList.add('out');setTimeout(()=>splash.remove(),600)},1400);
+</script></body></html>
